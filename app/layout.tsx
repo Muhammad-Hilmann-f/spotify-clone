@@ -5,7 +5,7 @@ import Sidebar from "@/components/Sidebar";
 
 const font = Figtree({
   subsets: ["latin"],
-  weight: "400",
+  weight: "700",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className} antialiased`}>
-        <Sidebar> {children} </Sidebar>
+        <Sidebar>{children} </Sidebar>
       </body>
     </html>
   );
