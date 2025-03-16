@@ -8,7 +8,7 @@ interface SidebarItemProps {
   active: boolean;
   href: string;
 }
-const SIdebarItem: React.FC<SidebarItemProps> = ({
+const SidebarItem: React.FC<SidebarItemProps> = ({
   icon: Icon,
   label,
   active,
@@ -28,4 +28,4 @@ const SIdebarItem: React.FC<SidebarItemProps> = ({
   );
 };
 
-export default SIdebarItem;
+export default SidebarItem;
