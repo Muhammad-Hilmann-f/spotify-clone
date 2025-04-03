@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Subscription, UserDetails } from "@/types";
 import { User } from "@supabase/auth-helpers-nextjs";
 import {
@@ -19,6 +20,7 @@ export const UserContext = createContext<UserContextType | undefined>(
 );
 
 export interface Props {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [propName: string]: any;
 }
 
@@ -49,7 +51,7 @@ export const MyUserContextProvider = (props: Props) => {
       .in("status", ["trialing", "active"])
       .single();
     if (error) {
-      console.error("Error fetching subscription:", error);
+      console.log("Error fetching subscription:", error);
     }
     return data;
   };
