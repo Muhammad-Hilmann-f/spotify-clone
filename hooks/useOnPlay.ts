@@ -1,3 +1,4 @@
+// File: useOnPlay.ts
 import { Song } from "@/types";
 import usePlayer from "./usePlayer";
 import useAuthModal from "./useAuthModal";
@@ -13,8 +14,18 @@ const useOnPlay = (songs: Song[]) => {
       return authModal.onOpen();
     }
 
+    if (!songs || !Array.isArray(songs)) {
+      console.error("Songs is not an array or undefined:", songs);
+      return;
+    }
+
     player.setId(id);
-    player.setIds(songs.map((song) => song.id));
+
+    try {
+      player.setIds(songs.map((song) => song.id));
+    } catch (error) {
+      console.error("Error setting song IDs:", error);
+    }
   };
 
   return onPlay;

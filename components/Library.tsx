@@ -1,3 +1,4 @@
+// File: Library.tsx
 "use client";
 
 import useAuthModal from "@/hooks/useAuthModal";
@@ -7,6 +8,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { TbPlaylist } from "react-icons/tb";
 import MediaItem from "./MediaItem";
 import { Song } from "@/types";
+import useOnPlay from "@/hooks/useOnPlay";
 
 interface LibraryProps {
   songs: Song[];
@@ -15,6 +17,9 @@ interface LibraryProps {
 const Library: React.FC<LibraryProps> = ({ songs }) => {
   const authModal = useAuthModal();
   const { user } = useUser();
+
+  const onPlay = useOnPlay(songs);
+
   const uploadModal = useUploadModal();
 
   const onClick = () => {
@@ -41,7 +46,11 @@ const Library: React.FC<LibraryProps> = ({ songs }) => {
       </div>
       <div className="flex flex-col gap-y-2 mt-4 px-3">
         {songs.map((item) => (
-          <MediaItem key={item.id} onClick={() => {}} data={item} />
+          <MediaItem
+            key={item.id}
+            onClick={(id: string) => onPlay(id)}
+            data={item}
+          />
         ))}
       </div>
     </div>
