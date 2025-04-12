@@ -22,7 +22,7 @@ const relevantEvents = new Set([
 
 export async function POST(request: Request) {
   const body = await request.text();
-  const sig = request.headers.get("stripe-signature"); // 🔧 gunakan request.headers.get()
+  const sig = request.headers.get("stripe-signature");
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event: Stripe.Event;
