@@ -4,12 +4,12 @@ import { NextResponse } from "next/server";
 
 import { stripe } from "@/libs/stripe";
 import { getUrl } from "@/libs/helpers";
-import { createdOrRetrieveACustomer } from "@/libs/supabaseAdmin";
+import { createOrRetrieveACustomer } from "@/libs/supabaseAdmin";
 
 export async function POST(request: Request) {
-  const { price, quantity = 1, metadata = {} } = await request.json();
-
   try {
+    const { price, quantity = 1, metadata = {} } = await request.json();
+
     const supabase = createRouteHandlerClient({ cookies });
     const {
       data: { user },
@@ -19,13 +19,13 @@ export async function POST(request: Request) {
       return new NextResponse("User not authenticated", { status: 401 });
     }
 
-    const customer = await createdOrRetrieveACustomer({
+    const customer = await createOrRetrieveACustomer({
       uuid: user.id,
       email: user.email || "",
     });
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "paypal"],
+      payment_method_types: ["card"],
       mode: "subscription",
       billing_address_collection: "required",
       customer,
@@ -39,15 +39,17 @@ export async function POST(request: Request) {
       subscription_data: {
         trial_from_plan: true,
         metadata,
-      } as any,
+      },
       success_url: `${getUrl()}/account`,
       cancel_url: `${getUrl()}/`,
-      metadata,
     });
 
+    console.log("Stripe session created:", session.id);
+
     return NextResponse.json({ sessionId: session.id });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.log("Error creating Stripe checkout session:", error.message);
+    console.error("Error creating checkout session:", error.message);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

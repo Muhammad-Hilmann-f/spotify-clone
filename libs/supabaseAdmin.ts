@@ -58,7 +58,7 @@ const upsertPriceRecord = async (price: Stripe.Price) => {
 };
 
 // Create or Retrieve Customer
-const createdOrRetrieveACustomer = async ({
+const createOrRetrieveACustomer = async ({
   email,
   uuid,
 }: {
@@ -136,6 +136,7 @@ const copyBillingDetailsToCustomer = async (
 };
 
 // Manage subscription change
+// Manage subscription change
 const manageSubscriptionStatusChange = async (
   subscriptionId: string,
   customerId: string,
@@ -146,7 +147,6 @@ const manageSubscriptionStatusChange = async (
     .select("id")
     .eq("stripe_customer_id", customerId)
     .single();
-
   if (noCustomerError) throw noCustomerError;
 
   const { id: uuid } = customerData;
@@ -155,16 +155,25 @@ const manageSubscriptionStatusChange = async (
     expand: ["default_payment_method"],
   });
 
+  const item = subscription.items.data[0];
+  // Log data subscription
+  console.log("Subscription retrieved from Stripe:", subscription);
+  console.log("Retrieving subscription from Stripe with ID:", subscriptionId);
+
+  // Log sebelum query Supabase
+  console.log(
+    "Checking customer in Supabase with Stripe Customer ID:",
+    customerId
+  );
+
   const subscriptionData: Database["public"]["Tables"]["subscriptions"]["Insert"] =
     {
       id: subscription.id,
       user_id: uuid,
       metadata: subscription.metadata,
-      // @ts-ignore
-      status: subscription.status,
-      price_id: subscription.items.data[0].price.id,
-      // @ts-ignore
-      quantity: subscription.quantity,
+      status: subscription.status as any,
+      price_id: item.price.id,
+      quantity: item.quantity,
       cancel_at_period_end: subscription.cancel_at_period_end,
       cancel_at: subscription.cancel_at
         ? toDateTime(subscription.cancel_at).toISOString()
@@ -213,6 +222,6 @@ const manageSubscriptionStatusChange = async (
 export {
   upsertPriceRecord,
   upsertProductRecord,
-  createdOrRetrieveACustomer,
+  createOrRetrieveACustomer,
   manageSubscriptionStatusChange,
 };

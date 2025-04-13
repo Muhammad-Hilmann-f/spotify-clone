@@ -4,18 +4,19 @@ import { NextResponse } from "next/server";
 
 import { stripe } from "@/libs/stripe";
 import { getUrl } from "@/libs/helpers";
-import { createdOrRetrieveACustomer } from "@/libs/supabaseAdmin";
+import { createOrRetrieveACustomer } from "@/libs/supabaseAdmin";
 
 export async function POST() {
   try {
     const supabase = createRouteHandlerClient({ cookies });
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (!user) throw new Error("Could not get user");
 
-    const customer = await createdOrRetrieveACustomer({
+    const customer = await createOrRetrieveACustomer({
       uuid: user.id || "",
       email: user.email || "",
     });
@@ -29,7 +30,7 @@ export async function POST() {
 
     return NextResponse.json({ url });
   } catch (error: any) {
-    console.error("Billing Portal Error:", error.message);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    console.log(error);
+    return new NextResponse("Internal error", { status: 500 });
   }
 }

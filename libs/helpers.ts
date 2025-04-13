@@ -1,18 +1,10 @@
-import { Price } from "@/types";
-
 export const getUrl = () => {
-  let url =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.NEXT_PUBLIC_VERCEL_URL ??
-    "http://localhost:3000/";
+  let url = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  // Tambahin protokol kalau belum ada
-  url = url.includes("http") ? url : `http://${url}`;
+  // Menambahkan protokol jika belum ada
+  url = url.startsWith("http") ? url : `http://${url}`;
 
-  // Pastikan URL diakhiri dengan slash
-  url = url.endsWith("/") ? url : `${url}/`;
-
-  return url;
+  return url.endsWith("/") ? url : `${url}/`;
 };
 
 export const postData = async ({
@@ -20,7 +12,7 @@ export const postData = async ({
   data,
 }: {
   url: string;
-  data: { price: Price };
+  data?: object;
 }) => {
   console.log("POST REQUEST:", url, data);
 
@@ -32,14 +24,8 @@ export const postData = async ({
   });
 
   if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.statusText}`);
+    throw new Error(`HTTP error! status: ${res.status}`);
   }
 
   return res.json();
-};
-
-export const toDateTime = (secs: number) => {
-  const t = new Date(0);
-  t.setUTCSeconds(secs);
-  return t;
 };

@@ -45,14 +45,15 @@ export const MyUserContextProvider = (props: Props) => {
   };
 
   const getSubscription = async () => {
+    console.log("Fetching subscriptions with status: ['trialing', 'active']");
     const { data, error } = await supabase
       .from("subscriptions")
       .select("*,prices(*,products(*))")
-      .in("status", ["trialing", "active"])
-      .single();
+      .in("status", ["trialing", "active"]);
     if (error) {
-      console.log("Error fetching subscription:", error);
+      console.error("Supabase query error:", error);
     }
+    console.log("Subscription query result:", data);
     return data;
   };
 
